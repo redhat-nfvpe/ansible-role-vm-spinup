@@ -1,0 +1,8 @@
+---
+- hosts: virthost
+  vars_files:
+    - defaults/main.yml
+  tasks:
+    # - import_tasks: tasks/virthost-basics.yml
+    # - import_tasks: tasks/spinup.yml
+    - import_tasks: tasks/teardown.yml

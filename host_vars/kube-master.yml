@@ -1,3 +1,0 @@
----
-cni_subnet: fd00:1234::/110
-cni_gateway: fd00:1234::1

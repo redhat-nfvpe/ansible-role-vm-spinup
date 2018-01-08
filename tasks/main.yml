@@ -1,0 +1,6 @@
+---
+# tasks file for vm-spinup
+- import_tasks: tasks/virthost-basics.yml
+  when: "not skip_virthost_depedencies"
+
+- import_tasks: tasks/spinup.yml

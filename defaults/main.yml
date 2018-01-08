@@ -1,0 +1,39 @@
+---
+images_directory: /home/images
+centos_genericcloud_url: "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1611.qcow2"
+image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
+
+ssh_proxy_enabled: false
+ssh_proxy_user: root
+system_default_ram_mb: 2048
+system_default_cpus: 4
+virtual_machines:
+  - name: kube-master
+    node_type: master
+  - name: kube-node-1
+    node_type: nodes
+  - name: kube-node-2
+    node_type: nodes
+  - name: kube-node-3
+    node_type: nodes
+
+gluster_attach_disk: true
+
+# Disk sizes (for virtual machines)
+spare_disk_size_megs: 10240
+spare_disk_location: "/var/lib/libvirt/images"
+spare_disk_dev: vdb
+
+# Allows one to skip the steps to initially setup a virthost
+# convenient when iterating quickly.
+skip_virthost_depedencies: false
+
+# Enables a bridge to the outside LAN
+# (as opposed to using virbr0)
+bridge_networking: false
+bridge_name: virbr0
+bridge_physical_nic: "enp1s0f1"
+bridge_network_name: "br0"
+bridge_network_cidr: 192.168.1.0/24
+
+ipv6_enabled: false

@@ -1,5 +1,0 @@
----
-- hosts: master,nodes
-  tasks: []
-  roles:
-    - { role: multus-cni }

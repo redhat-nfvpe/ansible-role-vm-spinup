@@ -1,5 +1,0 @@
----
-- hosts: virthost
-  tasks: []
-  roles:
-    - { role: vm-teardown }

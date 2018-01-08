@@ -1,9 +1,0 @@
----
-- hosts: master,nodes
-  become: true
-  become_user: root
-  gather_facts: False
-  tasks:
-    # https://trello.com/c/XaiXEocS/239-bz-to-track-adding-python-to-the-fedora-cloud-images
-    - name: install python2 and dnf stuff
-      raw: (dnf -y install python-dnf python2-dnf libselinux-python)
