@@ -1,6 +1,17 @@
 ---
 # tasks file for vm-spinup
-- import_tasks: tasks/virthost-basics.yml
-  when: "not skip_virthost_depedencies"
 
-- import_tasks: tasks/spinup.yml
+- name: Perform spinup
+  block: 
+    - import_tasks: tasks/virthost-basics.yml
+      when: "not skip_virthost_depedencies"
+
+    - import_tasks: tasks/spinup.yml
+
+    - import_tasks: tasks/attach-disks.yml
+      when: "gluster_attach_disk == true"
+  when: not teardown
+
+- name: Perform teardown
+  import_tasks: tasks/teardown.yml
+  when: teardown
