@@ -1,12 +1,12 @@
 ---
 
+# Mode options ----------------------------------------
+
 # Determine which mode we're using
 # default to spin up, but, if teardown is true, tear down the VMs.
 teardown: false
 
-images_directory: /home/images
-centos_genericcloud_url: "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1611.qcow2"
-image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
+# Virtual Machines ------------------------------------
 
 ssh_proxy_enabled: false
 ssh_proxy_user: root
@@ -22,6 +22,7 @@ virtual_machines:
   - name: kube-node-3
     node_type: nodes
 
+# Disk options -----------------------------------------
 
 # Spare disk sizes (for virtual machines)
 spare_disk_attach: true
@@ -29,9 +30,8 @@ spare_disk_size_megs: 10240
 spare_disk_location: "/var/lib/libvirt/images"
 spare_disk_dev: vdb
 
-# Allows one to skip the steps to initially setup a virthost
-# convenient when iterating quickly.
-skip_virthost_depedencies: false
+
+# Network options --------------------------------------
 
 # Enables a bridge to the outside LAN
 # (as opposed to using virbr0)
@@ -40,5 +40,16 @@ bridge_name: virbr0
 bridge_physical_nic: "enp1s0f1"
 bridge_network_name: "br0"
 bridge_network_cidr: 192.168.1.0/24
-
 ipv6_enabled: false
+
+
+# Virtualization Host options --------------------------
+
+images_directory: /home/images
+centos_genericcloud_url: "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1611.qcow2"
+image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
+
+# Allows one to skip the steps to initially setup a virthost
+# convenient when iterating quickly.
+skip_virthost_depedencies: false
+
