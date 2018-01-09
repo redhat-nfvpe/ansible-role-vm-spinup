@@ -9,7 +9,7 @@
     - import_tasks: tasks/spinup.yml
 
     - import_tasks: tasks/attach-disks.yml
-      when: "gluster_attach_disk == true"
+      when: "spare_disk_attach == true"
   when: not teardown
 
 - name: Perform teardown

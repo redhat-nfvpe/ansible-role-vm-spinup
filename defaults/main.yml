@@ -22,9 +22,9 @@ virtual_machines:
   - name: kube-node-3
     node_type: nodes
 
-gluster_attach_disk: true
 
-# Disk sizes (for virtual machines)
+# Spare disk sizes (for virtual machines)
+spare_disk_attach: true
 spare_disk_size_megs: 10240
 spare_disk_location: "/var/lib/libvirt/images"
 spare_disk_dev: vdb
