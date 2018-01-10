@@ -3,6 +3,7 @@
   vars_files:
     - defaults/main.yml
   tasks:
-    - set_fact:
+    - name: Do not teardown virtual machines by default
+      set_fact:
         teardown: false
     - import_tasks: tasks/main.yml

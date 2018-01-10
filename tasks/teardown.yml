@@ -1,24 +1,31 @@
 ---
+- name: Get list of virtual machines
+  virt:
+    command: list_vms
+  register: virt
+
 - name: Destroy all VMs
-  shell: >
+  command: >
     virsh destroy {{ item.name }}
   with_items: "{{ virtual_machines }}"
-  ignore_errors: yes
+  when: item.name in virt.list_vms
 
 - name: Undefine all VMs
-  shell: >
+  command: >
     virsh undefine --remove-all-storage {{ item.name }}
   with_items: "{{ virtual_machines }}"
-  ignore_errors: yes
+  when: item.name in virt.list_vms
 
 - name: Remove spare disk images
   file:
     dest: "{{ spare_disk_location }}/{{ item.name }}.img"
     state: absent
   with_items: "{{ virtual_machines }}"
+  when: item.name in virt.list_vms
 
 - name: Remove spare disk attached semaphor
   file:
     dest: "{{ spare_disk_location }}/.attached-{{ item.name }}"
     state: absent
   with_items: "{{ virtual_machines }}"
+  when: item.name in virt.list_vms
