@@ -1,4 +1,4 @@
-# ansible-vm-spinup
+# ansible-role-vm-spinup
 
 A set of roles for spinning up simple libvirt virtual machines for labs. This is primarily used in labs for spinning up machines for running Kubernetes, so some of the VMs used you'll note are tailored to this situation.
 
@@ -12,7 +12,7 @@ An example inclusion of this role may look like:
 
     - hosts: servers
       roles:
-         - { role: dougbtv.ansible-vm-spinup }
+         - { role: redhat-nfvpe.vm-spinup }
 
 ## Role Variables
 
@@ -92,7 +92,7 @@ skip_virthost_depedencies: false
 
 ## License
 
-Apache
+Apache v2.0
 
 ## Author Information
 
