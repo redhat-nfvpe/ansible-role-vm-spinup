@@ -8,14 +8,13 @@ galaxy_info:
   min_ansible_version: 2.3
 
   platforms:
-  - name: CentOS
+  - name: EL
     versions:
     - 7
 
   galaxy_tags:
-    - virtual_machine
-    - vm
-    - instantiate
-    - spinup
+  - networking
+  - packaging
+  - system
 
 dependencies: []
