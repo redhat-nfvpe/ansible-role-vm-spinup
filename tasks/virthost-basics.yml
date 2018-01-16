@@ -121,7 +121,29 @@
       virt_net:
         name: k8s-ipv6-private
         autostart: yes
-  when: ipv6_enabled
+  when: network_type == "ipv6"
+
+- name: Create data network for kokonet
+  block:
+    - name: Define network namespace
+      virt_net:
+        name: kokonet-data
+        command: define
+        xml: >
+          <network>
+            <name>kokonet-data</name>
+          </network>
+
+    - name: Set network active
+      virt_net:
+        name: kokonet-data
+        state: active
+
+    - name: Set network to autostart
+      virt_net:
+        name: kokonet-data
+        autostart: yes
+  when: network_type == "kokonet"
 
 - name: enable ipv6 forwarding
   sysctl:

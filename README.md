@@ -57,11 +57,16 @@ spare_disk_dev: vdb
 
 ### Network options
 
+`network_type` indicates network environment for the virtual machines. `"default"` has one bridge and others are different for each purpose.
+
 Note that this creates a bridge on the host as the name specified by `bridge_network_name`.
 
 The virtual machines will be bridged to the bridge specified by `bridge_name`.
 
 ```
+# Network type (default/ipv6/kokonet)
+network_type: "default"
+
 # Enables a bridge to the outside LAN
 # (as opposed to using virbr0)
 bridge_name: virbr0
