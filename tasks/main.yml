@@ -1,6 +1,11 @@
 ---
 # tasks file for vm-spinup
 
+- name: Change network type ipv6
+  set_fact:
+    network_type: "ipv6"
+  when: ipv6_enabled == true
+
 - name: Perform spinup
   block:
     - import_tasks: virthost-basics.yml
