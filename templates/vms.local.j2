@@ -1,4 +1,4 @@
-{% for key, value in vm_ips_dict.iteritems() %}
+{% for key, value in vm_ips_dict|dictsort %}
 {{ key }} ansible_host={{ value }}
 {% endfor %}
 
