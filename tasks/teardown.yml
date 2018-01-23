@@ -29,3 +29,10 @@
     state: absent
   with_items: "{{ virtual_machines }}"
   when: item.name in virt.list_vms
+
+- name: Remove virtual machine directory
+  file:
+    dest: "{{ images_directory }}/{{ item.name }}"
+    state: absent
+  with_items: "{{ virtual_machines }}"
+  when: item.name in virt.list_vms
