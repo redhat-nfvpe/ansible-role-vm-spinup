@@ -95,6 +95,17 @@ image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
 skip_virthost_depedencies: false
 ```
 
+#### Less frequently utilized options
+
+One less used option is in the case of nested virtualization and using QEMU, 
+you may need to work-around setting the vCPUs, and can do so by setting, which 
+will cause there to be no `--vcpus` flag set during `virt-install`.
+
+```
+nested_virt_qemu_skip_vcpus: true
+```
+
+
 ## License
 
 Apache v2.0
