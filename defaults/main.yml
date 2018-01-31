@@ -22,6 +22,10 @@ virtual_machines:
   - name: kube-node-3
     node_type: nodes
 
+# With qemu and a nested virt situation one may 
+# need to skip specifying the vcpus
+nested_virt_qemu_skip_vcpus: false
+
 # Disk options -----------------------------------------
 
 # Spare disk sizes (for virtual machines)
