@@ -73,6 +73,7 @@
   command: >
     cat /root/.ssh/id_vm_rsa.pub
   register: cat_id_pub
+  changed_when: false
   tags:
     - skip_ansible_lint
     # Skip ANSIBLE0012 because we always want to get this public key

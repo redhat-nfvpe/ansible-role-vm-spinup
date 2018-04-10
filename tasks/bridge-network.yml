@@ -8,6 +8,7 @@
   shell: >
     ip link | grep -A1 {{ bridge_physical_nic }} | grep link | awk '{print $2}'
   register: mac_address
+  changed_when: false
   tags:
     - skip_ansible_lint
     # Skip ANSIBLE0012 since we always need to run this

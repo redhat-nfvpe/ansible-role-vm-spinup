@@ -15,6 +15,7 @@
   command: >
     virsh list
   register: virsh_list
+  changed_when: false
   tags:
     - skip_ansible_lint
     # Skip ANSIBLE0012 because we need the virsh list each time we run
@@ -29,6 +30,7 @@
   command: >
     cat /tmp/{{ item.name }}.ip.txt
   register: vm_ip_addresses
+  changed_when: false
   with_items: "{{ virtual_machines }}"
   tags:
     - skip_ansible_lint
