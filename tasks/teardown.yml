@@ -30,6 +30,49 @@
   with_items: "{{ virtual_machines }}"
   when: item.name in virt.list_vms
 
+- name: Get list of VM networks
+  virt_net:
+    command: info
+  register: networks
+
+- name: Delete subnetworks
+  block:
+  - name: Delete network for IPv6
+    block:
+      - name: Destroy network for IPv6
+        virt_net:
+          command: destroy
+          name: k8s_ipv6_private
+      - name: Undefine network for IPv6
+        virt_net:
+          command: undefine
+          name: k8s_ipv6_private
+    when: networks.networks.k8s_ipv6_private is defined
+
+  - name: Delete network for kokonet-lab
+    block:
+      - name: Destroy network for kokonet-lab
+        virt_net:
+          command: destroy
+          name: kokonet_data
+      - name: Undefine network for kokonet-lab
+        virt_net:
+          command: undefine
+          name: kokonet_data
+    when: networks.networks.kokonet_data is defined
+
+  - name: Delete network for npwg-poc1
+    block:
+      - name: Destroy network for npwg-poc1
+        virt_net:
+          command: destroy
+          name: npwg_poc1_net
+      - name: Undefine network for npwg-poc1
+        virt_net:
+          command: undefine
+          name: npwg_poc1_net
+    when: networks.networks.npwg_poc1_net is defined
+
 - name: Remove virtual machine directory
   file:
     dest: "{{ images_directory }}/{{ item.name }}"
