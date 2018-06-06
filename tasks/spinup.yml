@@ -63,8 +63,14 @@
     ssh_proxy_host: "{{ ansible_host }}"
   when: not ssh_proxy_host is defined and ssh_proxy_enabled
 
+- name: Validate our inventory directory exists
+  file:
+    path: "{{ playbook_dir }}/../inventory/"
+    state: directory
+
 - name: Build a local inventory
   template:
     src: vms.local.j2
     dest: "{{ playbook_dir }}/../inventory/vms.local.generated"
   delegate_to: 127.0.0.1
+  ignore_errors: yes
