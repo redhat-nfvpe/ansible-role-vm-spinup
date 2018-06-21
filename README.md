@@ -23,7 +23,9 @@ By default, this role will spin up virtual machines, should you wish to remove t
 teardown: false
 ```
 
-### Virtual machine options
+# Configuration Options
+
+## Virtual machine options
 
 By default we spin up 4 machines. You may
 
@@ -43,7 +45,7 @@ virtual_machines:
     node_type: nodes
 ```
 
-### Disk Options
+## Disk options
 
 ```
 # Disk options -----------------------------------------
@@ -55,7 +57,7 @@ spare_disk_location: "/var/lib/libvirt/images"
 spare_disk_dev: vdb
 ```
 
-### Network options
+## Network options
 
 `network_type` indicates network environment for the virtual machines. `"default"` has one bridge and others are different for each purpose.
 
@@ -79,6 +81,38 @@ bridge_network_cidr: 192.168.1.0/24
 
 # Creates a secondary nic on each VM with IPv6 addressing.
 ipv6_enabled: false
+```
+
+### Static IP configuration for virtual machines using bridged networking
+
+You can define a `static_ip` for the `virtual_machines` list (see previous
+section). If you do that, then that IP address will be passed to the
+`spinup.sh` script that instantiates the virtual machine. In order for
+networking to work with bridged networking and static IP addresses, you'll need
+to define some extra networking configuration.
+
+```
+system_network: 192.168.1.0
+system_netmask: 255.255.255.0
+system_broadcast: 192.168.1.255
+system_gateway: 192.168.1.254
+system_nameservers: 192.168.1.1
+system_dns_search: example.local
+```
+
+If you make use of `static_ip` configuration, you use it like this:
+
+```
+virtual_machines:
+  - name: openshift-lb
+    node_type: lb
+    system_ram_mb: 4096
+    static_ip: 192.168.1.64
+  - name: openshift-master-2
+    node_type: nodes
+    system_ram_mb: 8192
+    static_ip: 192.168.1.66
+...
 ```
 
 ### Virtualization host options
