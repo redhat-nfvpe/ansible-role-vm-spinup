@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Take one argument from the commandline: VM name
-if [ $# -gt 3 ] || [ $# -lt 1 ]; then
-    echo "Usage: $0 <node-name> {memory-MB} {vCPUs}"
+if [ $# -gt 4 ] || [ $# -lt 1 ]; then
+    echo "Usage: $0 <node-name> {memory-MB} {vCPUs} {IP-address}"
     exit 1
 fi
 
@@ -96,7 +96,25 @@ ssh_authorized_keys:
   - {{ vm_ssh_key }}
 _EOF_
 
-    echo "instance-id: $1; local-hostname: $1" > $META_DATA
+    cat > $META_DATA << _EOF_
+instance-id: $1
+local-hostname: $1
+_EOF_
+
+if [ $# -eq 4 ]; then
+    cat >> $META_DATA << _EOF_
+network-interfaces: |
+  auto eth0
+  iface eth0 inet static
+    address $4
+    network {{ system_network }}
+    netmask {{ system_netmask }}
+    broadcast {{ system_broadcast }}
+    gateway {{ system_gateway }}
+    dns-nameservers {{ system_nameservers }}
+    dns-search {{ system_dns_search }}
+_EOF_
+fi
 
     echo "$(date -R) Copying template image..."
     cp $IMAGE $DISK
