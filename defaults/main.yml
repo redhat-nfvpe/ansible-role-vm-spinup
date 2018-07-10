@@ -8,6 +8,7 @@ teardown: false
 
 # Virtual Machines ------------------------------------
 
+default_ansible_user: centos    # default user to login as via ansible
 ssh_proxy_enabled: false
 ssh_proxy_user: root
 system_default_ram_mb: 2048
