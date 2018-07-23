@@ -101,6 +101,7 @@ instance-id: $1
 local-hostname: $1
 _EOF_
 
+{% if system_network is defined %}
 if [ $# -eq 4 ]; then
     cat >> $META_DATA << _EOF_
 network-interfaces: |
@@ -115,6 +116,7 @@ network-interfaces: |
     dns-search {{ system_dns_search }}
 _EOF_
 fi
+{% endif %}
 
     echo "$(date -R) Copying template image..."
     cp $IMAGE $DISK
