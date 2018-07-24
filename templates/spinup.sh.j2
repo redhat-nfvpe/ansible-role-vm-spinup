@@ -108,12 +108,12 @@ network-interfaces: |
   auto eth0
   iface eth0 inet static
     address $4
-    network {{ system_network }}
-    netmask {{ system_netmask }}
-    broadcast {{ system_broadcast }}
-    gateway {{ system_gateway }}
-    dns-nameservers {{ system_nameservers }}
-    dns-search {{ system_dns_search }}
+    network {{ system_network | default(null) }}
+    netmask {{ system_netmask | default(null) }}
+    broadcast {{ system_broadcast | default(null) }}
+    gateway {{ system_gateway | default (null) }}
+    dns-nameservers {{ system_nameservers | default(null) }}
+    dns-search {{ system_dns_search | default(null) }}
 _EOF_
 fi
 {% endif %}
