@@ -145,7 +145,7 @@ fi
             # Use nmap to find it if it's using the bridged network 
             # (instead of local nat)
             mac=$(virsh domiflist $1 | grep -i "virtio" | awk '{print $5}')
-            IP=$(nmap -sP {{ bridge_network_cidr }} | grep -i "$mac" -B 2 | head -n1 | awk '{print $5}')
+            IP=$(nmap -sP -n {{ bridge_network_cidr }} | grep -i "$mac" -B 2 | head -n1 | awk '{print $5}')
         fi
 
         if [ "$IP" = "" ]; then
