@@ -7,7 +7,7 @@
 teardown: false
 
 # Virtual Machines ------------------------------------
-
+hugepages_enabled: false
 default_ansible_user: centos    # default user to login as via ansible
 ssh_proxy_enabled: false
 ssh_proxy_user: root
