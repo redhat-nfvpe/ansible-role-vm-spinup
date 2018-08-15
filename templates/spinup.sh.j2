@@ -32,6 +32,15 @@ MEM=${2:-{{ system_default_ram_mb }}}
 CPUS=${3:-{{ system_default_cpus }}}
 {% if nested_virt_qemu_skip_vcpus %}#{% endif %}PARAM_VCPUS="--vcpus $CPUS"
 
+# Enable huge pages?
+{% if not hugepages_enabled %}#{% endif %}PARAM_HUGEPAGES="--memorybacking hugepages=yes"
+{% if hugepages_enabled %}
+if [ "$MEM" -lt "4096" ]; then
+    echo "ERROR: Recommend you use 4096mb or more RAM when enabling hugepages"
+    exit 1
+fi
+{% endif %}
+
 # Cloud init files
 USER_DATA=user-data
 META_DATA=meta-data
@@ -127,11 +136,11 @@ fi
 
     echo "$(date -R) Installing the domain and adjusting the configuration..."
     echo "[INFO] Installing with the following parameters:"
-    echo "virt-install --import --name $1 --ram $MEM $PARAM_VCPUS --disk \
+    echo "virt-install --import --name $1 --ram $MEM $PARAM_VCPUS $PARAM_HUGEPAGES --disk \
     $DISK,format=qcow2,bus=virtio --disk $CI_ISO,device=cdrom --network \
     bridge={{ bridge_name }},model=virtio $net_ext --os-type=linux --os-variant=rhel6 --noautoconsole"
 
-    virt-install --import --name $1 --ram $MEM $PARAM_VCPUS --disk \
+    virt-install --import --name $1 --ram $MEM $PARAM_VCPUS $PARAM_HUGEPAGES --disk \
     $DISK,format=qcow2,bus=virtio --disk $CI_ISO,device=cdrom --network \
     bridge={{ bridge_name }},model=virtio $net_ext --os-type=linux --os-variant=rhel6 --noautoconsole
 
