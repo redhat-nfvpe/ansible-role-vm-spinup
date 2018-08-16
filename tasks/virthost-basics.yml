@@ -1,9 +1,22 @@
 ---
-
 - name: Install required packages
   package:
-    name: virt-manager,libvirt,libvirt-daemon-kvm,nano,tcpdump,net-tools,libvirt-client,virt-install,genisoimage,nmap,libvirt-python,python-lxml
+    name: "{{ packages }}"
     state: present
+  vars:
+    packages:
+      - virt-manager
+      - libvirt
+      - libvirt-daemon-kvm
+      - nano
+      - tcpdump
+      - net-tools
+      - libvirt-client
+      - virt-install
+      - genisoimage
+      - nmap
+      - libvirt-python
+      - python-lxml
 
 - name: Start and enable libvirtd
   service:
