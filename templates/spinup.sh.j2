@@ -138,11 +138,13 @@ fi
     echo "[INFO] Installing with the following parameters:"
     echo "virt-install --import --name $1 --ram $MEM $PARAM_VCPUS $PARAM_HUGEPAGES --disk \
     $DISK,format=qcow2,bus=virtio --disk $CI_ISO,device=cdrom --network \
-    bridge={{ bridge_name }},model=virtio $net_ext --os-type=linux --os-variant=rhel6 --noautoconsole"
+    bridge={{ bridge_name }},model=virtio $net_ext --os-type=linux --os-variant=rhel6 --noautoconsole \
+    --autostart"
 
     virt-install --import --name $1 --ram $MEM $PARAM_VCPUS $PARAM_HUGEPAGES --disk \
     $DISK,format=qcow2,bus=virtio --disk $CI_ISO,device=cdrom --network \
-    bridge={{ bridge_name }},model=virtio $net_ext --os-type=linux --os-variant=rhel6 --noautoconsole
+    bridge={{ bridge_name }},model=virtio $net_ext --os-type=linux --os-variant=rhel6 --noautoconsole \
+    --autostart
 
     MAC=$(virsh domiflist $1 | grep {{ bridge_name }} | awk '{print $5}')
     while true
