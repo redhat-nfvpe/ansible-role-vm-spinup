@@ -30,6 +30,18 @@
   with_items: "{{ virtual_machines }}"
   when: item.name in virt.list_vms
 
+- name: Destroy volume pool
+  command: >
+    virsh pool-destroy {{ item.name }}
+  with_items: "{{ virtual_machines }}"
+  when: item.name in virt.list_vms
+
+- name: Undefine volume pool
+  command: >
+    virsh pool-undefine {{ item.name }}
+  with_items: "{{ virtual_machines }}"
+  when: item.name in virt.list_vms
+
 - name: Get list of VM networks
   virt_net:
     command: info
