@@ -52,7 +52,7 @@ ipv6_enabled: false
 # Virtualization Host options --------------------------
 
 images_directory: /home/images
-centos_genericcloud_url: "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1802.qcow2"
+centos_genericcloud_url: "http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1809.qcow2"
 image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
 
 # Allows one to skip the steps to initially setup a virthost
