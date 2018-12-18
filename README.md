@@ -66,7 +66,7 @@ Note that this creates a bridge on the host as the name specified by `bridge_net
 The virtual machines will be bridged to the bridge specified by `bridge_name`.
 
 ```
-# Network type (default/ipv6/kokonet)
+# Network type (default/ipv6)
 network_type: "default"
 
 # Enables a bridge to the outside LAN

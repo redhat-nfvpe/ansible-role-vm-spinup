@@ -61,18 +61,6 @@
           name: k8s_ipv6_private
     when: networks.networks.k8s_ipv6_private is defined
 
-  - name: Delete network for kokonet-lab
-    block:
-      - name: Destroy network for kokonet-lab
-        virt_net:
-          command: destroy
-          name: kokonet_data
-      - name: Undefine network for kokonet-lab
-        virt_net:
-          command: undefine
-          name: kokonet_data
-    when: networks.networks.kokonet_data is defined
-
   - name: Delete network for npwg-poc1
     block:
       - name: Destroy network for npwg-poc1

@@ -124,28 +124,6 @@
         autostart: yes
   when: network_type == "ipv6"
 
-- name: Create data network for kokonet
-  block:
-    - name: Define network namespace
-      virt_net:
-        name: kokonet_data
-        command: define
-        xml: >
-          <network>
-            <name>kokonet_data</name>
-          </network>
-
-    - name: Set network active
-      virt_net:
-        name: kokonet_data
-        state: active
-
-    - name: Set network to autostart
-      virt_net:
-        name: kokonet_data
-        autostart: yes
-  when: network_type == "kokonet"
-
 - name: Create secondary network for npwg poc1
   block:
     - name: Define network namespace
