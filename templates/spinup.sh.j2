@@ -53,8 +53,8 @@ BRIDGE={{ bridge_name }}
 # Additional network
 {% if network_type == "ipv6" %}
 net_ext='--network network=k8s_ipv6_private,model=virtio'
-{% elif network_type == "npwg-poc1" %}
-net_ext='--network network=npwg_poc1_net,model=virtio'
+{% elif network_type == "multus-2nics" %}
+net_ext='--network network=multus_2nics,model=virtio'
 {% else %}
 net_ext=''
 {% endif %}

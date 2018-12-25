@@ -61,17 +61,17 @@
           name: k8s_ipv6_private
     when: networks.networks.k8s_ipv6_private is defined
 
-  - name: Delete network for npwg-poc1
+  - name: Delete network for multus-2nics
     block:
-      - name: Destroy network for npwg-poc1
+      - name: Destroy network for multus-2nics
         virt_net:
           command: destroy
-          name: npwg_poc1_net
-      - name: Undefine network for npwg-poc1
+          name: multus_2nics
+      - name: Undefine network for multus-2nics
         virt_net:
           command: undefine
-          name: npwg_poc1_net
-    when: networks.networks.npwg_poc1_net is defined
+          name: multus_2nics
+    when: networks.networks.multus_2nics is defined
 
 - name: Remove virtual machine directory
   file:
