@@ -124,27 +124,27 @@
         autostart: yes
   when: network_type == "ipv6"
 
-- name: Create secondary network for npwg poc1
+- name: Create secondary network for multus-2nics
   block:
     - name: Define network namespace
       virt_net:
-        name: npwg_poc1_net
+        name: multus_2nics
         command: define
         xml: >
           <network>
-            <name>npwg_poc1_net</name>
+            <name>multus_2nics</name>
           </network>
 
     - name: Set network active
       virt_net:
-        name: npwg_poc1_net
+        name: multus_2nics
         state: active
 
     - name: Set network to autostart
       virt_net:
-        name: npwg_poc1_net
+        name: multus_2nics
         autostart: yes
-  when: network_type == "npwg-poc1"
+  when: network_type == "multus-2nics"
 
 - name: enable ipv6 forwarding
   sysctl:
