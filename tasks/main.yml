@@ -17,6 +17,17 @@
       when: "spare_disk_attach == true"
   when: not teardown
 
+# OCP4 configuration
+- block:
+    - name: Perform OCP4 configs
+      import_tasks: ocp4-setup.yml
+      when: not teardown
+
+    - name: Perform OCP4 cleanups
+      import_tasks: ocp4-cleanup.yml
+      when: teardown
+  when: ocp4_install | default('False') | bool
+
 - name: Perform teardown
   import_tasks: teardown.yml
   when: teardown

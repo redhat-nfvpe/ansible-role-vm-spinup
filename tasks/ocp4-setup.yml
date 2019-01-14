@@ -1,0 +1,47 @@
+---
+- name: Add DNS entry
+  block:
+    - name: Add bootstrap DNS entry
+      shell: |
+        virsh net-update default add dns-host "<host ip='{{ vm_ips_dict[item.name] }}'> \
+            <hostname>{{ ocp4_cluster_name }}.{{ ocp4_base_domain }}</hostname> \
+            <hostname>{{ ocp4_cluster_name }}-api.{{ ocp4_base_domain }}</hostname> \
+            <hostname>{{ item.name }}.{{ ocp4_base_domain }}</hostname></host>"
+      when: item.node_type == "bootstrap"
+      with_items: "{{ virtual_machines }}"
+    - name: Add master DNS entry
+      shell: |
+        virsh net-update default add dns-host "<host ip='{{ vm_ips_dict[item.name] }}'> \
+            <hostname>{{ ocp4_cluster_name }}-etcd-0.{{ ocp4_base_domain }}</hostname> \
+            <hostname>{{ ocp4_cluster_name }}-master-0.{{ ocp4_base_domain }}</hostname> \
+            <hostname>{{ item.name }}.{{ ocp4_base_domain }}</hostname></host>"
+      when: item.node_type == "masters"
+      with_items: "{{ virtual_machines }}"
+    - name: Add workers DNS entry
+      shell: |
+        virsh net-update default add dns-host "<host ip='{{ vm_ips_dict[item.name] }}'> \
+            <hostname>{{ item.name }}.{{ ocp4_base_domain }}</hostname></host>"
+      when: item.node_type == "workers"
+      with_items: "{{ virtual_machines }}"
+    - name: Add etcd-client-ssl.tcp entry
+      shell: |
+        virsh net-update default add dns-srv \
+            "<srv service='etcd-client-ssl' protocol='tcp' \
+              domain='{{ ocp4_cluster_name }}.{{ ocp4_base_domain }}' \
+              target='{{ ocp4_cluster_name }}-etcd-0.{{ ocp4_base_domain }}' \
+              port='2379' priority='10' weight='10'/>" \
+            --live --config
+    - name: Add etcd-server-ssl.tcp entry
+      shell: >
+        virsh net-update default add dns-srv \
+            "<srv service='etcd-server-ssl' protocol='tcp' \
+              domain='{{ ocp4_cluster_name }}.{{ ocp4_base_domain }}' \
+              target='{{ ocp4_cluster_name }}-etcd-0.{{ ocp4_base_domain }}' \
+              port='2380' priority='10' weight='10'/>" \
+            --live --config
+
+- name: Template the switch DNS script
+  template:
+    src: ocp4-change-dns.sh.j2
+    dest: /root/ocp4-change-dns.sh
+    mode: 0755
