@@ -22,6 +22,7 @@ virtual_machines:
     node_type: nodes
   - name: kube-node-3
     node_type: nodes
+use_host_passthrough: true
 
 # With qemu and a nested virt situation one may 
 # need to skip specifying the vcpus
