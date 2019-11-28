@@ -61,13 +61,13 @@
           name: k8s_ipv6_private
     when: networks.networks.k8s_ipv6_private is defined
 
-  - name: Delete network for multus-2nics
+  - name: Delete network for multus_2nics
     block:
-      - name: Destroy network for multus-2nics
+      - name: Destroy network for multus_2nics
         virt_net:
           command: destroy
           name: multus_2nics
-      - name: Undefine network for multus-2nics
+      - name: Undefine network for multus_2nics
         virt_net:
           command: undefine
           name: multus_2nics

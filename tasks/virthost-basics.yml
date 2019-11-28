@@ -124,7 +124,7 @@
         autostart: yes
   when: network_type == "ipv6"
 
-- name: Create secondary network for multus-2nics
+- name: Create secondary network for multus_2nics
   block:
     - name: Define network namespace
       virt_net:
@@ -144,7 +144,7 @@
       virt_net:
         name: multus_2nics
         autostart: yes
-  when: network_type == "multus-2nics"
+  when: network_type == "multus-2nics" or network_type == "none-2nics"
 
 - name: enable ipv6 forwarding
   sysctl:
