@@ -1,20 +1,41 @@
 #!/bin/bash
 
 # Take one argument from the commandline: VM name
-if [ $# -gt 4 ] || [ $# -lt 1 ]; then
+if [ $# -gt 8 ] || [ $# -lt 2 ]; then
     echo "Usage: $0 <node-name> {memory-MB} {vCPUs} {IP-address}"
     exit 1
 fi
 
+while getopts n:m:c:s:p: OPT
+do
+	case $OPT in
+		n)
+		nodename=$OPTARG
+		;;
+		m)
+		memorymb=$OPTARG
+		;;
+		c)
+		cpus=$OPTARG
+		;;
+		s)
+		staticip=$OPTARG
+		;;
+		p)
+		addparam=$OPTARG
+		;;
+	esac
+done
+
 # Check if domain already exists
-virsh dominfo $1 > /dev/null 2>&1
+virsh dominfo nodename > /dev/null 2>&1
 if [ "$?" -eq 0 ]; then
-    echo -n "[WARNING] $1 already exists.  "
-    read -p "Do you want to overwrite $1 [y/N]? " -r
+    echo -n "[WARNING] $nodename already exists.  "
+    read -p "Do you want to overwrite $nodename [y/N]? " -r
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         echo ""
     else
-        echo -e "\nNot overwriting $1. Exiting..."
+        echo -e "\nNot overwriting $nodename. Exiting..."
         exit 1
     fi
 fi
@@ -26,10 +47,10 @@ DIR={{ images_directory }}
 IMAGE={{ images_directory }}/{{ image_destination_name }}
 
 # Amount of RAM in MB
-MEM=${2:-{{ system_default_ram_mb }}}
+MEM=${memorymb:-{{ system_default_ram_mb }}}
 
 # Number of virtual CPUs
-CPUS=${3:-{{ system_default_cpus }}}
+CPUS=${cpus:-{{ system_default_cpus }}}
 {% if nested_virt_qemu_skip_vcpus %}#{% endif %}PARAM_VCPUS="--vcpus $CPUS"
 
 # Enable huge pages?
@@ -44,8 +65,8 @@ fi
 # Cloud init files
 USER_DATA=user-data
 META_DATA=meta-data
-CI_ISO=$1-cidata.iso
-DISK=$1.qcow2
+CI_ISO=${nodename}-cidata.iso
+DISK=${nodename}.qcow2
 
 # Bridge for VMs (default on Fedora is {{ bridge_name }})
 BRIDGE={{ bridge_name }}
@@ -60,19 +81,19 @@ net_ext=''
 {% endif %}
 
 # Start clean
-rm -rf $DIR/$1
-mkdir -p $DIR/$1
+rm -rf $DIR/${nodename}
+mkdir -p $DIR/${nodename}
 
-pushd $DIR/$1 > /dev/null
+pushd $DIR/${nodename} > /dev/null
 
     # Create log file
-    touch $1.log
+    touch ${nodename}.log
 
-    echo "$(date -R) Destroying the $1 domain (if it exists)..."
+    echo "$(date -R) Destroying the ${nodename} domain (if it exists)..."
 
     # Remove domain with the same name
-    virsh destroy $1 >> $1.log 2>&1
-    virsh undefine $1 >> $1.log 2>&1
+    virsh destroy ${nodename} >> ${nodename}.log 2>&1
+    virsh undefine ${nodename} >> ${nodename}.log 2>&1
 
     # cloud-init config: set hostname, remove cloud-init package,
     # and add ssh-key 
@@ -81,8 +102,8 @@ pushd $DIR/$1 > /dev/null
 
 # Hostname management
 preserve_hostname: False
-hostname: $1
-fqdn: $1
+hostname: ${nodename}
+fqdn: ${nodename}
 
 # Remove cloud-init when finished with it
 runcmd:
@@ -104,17 +125,17 @@ ssh_authorized_keys:
 _EOF_
 
     cat > $META_DATA << _EOF_
-instance-id: $1
-local-hostname: $1
+instance-id: ${nodename}
+local-hostname: ${nodename}
 _EOF_
 
 {% if system_network is defined %}
-if [ $# -eq 4 ]; then
+if [ -n ${staticip} ]; then
     cat >> $META_DATA << _EOF_
 network-interfaces: |
   auto eth0
   iface eth0 inet static
-    address $4
+    address ${staticip}
     network {{ system_network }}
     netmask {{ system_netmask }}
     broadcast {{ system_broadcast }}
@@ -130,26 +151,27 @@ fi
 
     # Create CD-ROM ISO with cloud-init config
     echo "$(date -R) Generating ISO for cloud-init..."
-    genisoimage -output $CI_ISO -volid cidata -joliet -r $USER_DATA $META_DATA &>> $1.log
+    genisoimage -output $CI_ISO -volid cidata -joliet -r $USER_DATA $META_DATA &>> ${nodename}.log
 
     echo "$(date -R) Installing the domain and adjusting the configuration..."
     echo "[INFO] Installing with the following parameters:"
-    echo "virt-install --import --name $1 --ram $MEM $PARAM_VCPUS $PARAM_HUGEPAGES --disk \
+    pwd >> /tmp/spinup.log
+    echo "virt-install --import --name ${nodename} --ram $MEM $PARAM_VCPUS $PARAM_HUGEPAGES --disk \
     $DISK,format=qcow2,bus=virtio --disk $CI_ISO,device=cdrom --network \
     bridge={{ bridge_name }},model=virtio $net_ext --os-type=linux --os-variant=rhel6 --noautoconsole \
-    --autostart {% if use_host_passthrough %}--cpu host-passthrough{% endif %}"
+    --autostart {% if use_host_passthrough %}--cpu host-passthrough{% endif %} ${addparam}" >> /tmp/spinup.log
 
-    virt-install --import --name $1 --ram $MEM $PARAM_VCPUS $PARAM_HUGEPAGES --disk \
+    virt-install --import --name ${nodename} --ram $MEM $PARAM_VCPUS $PARAM_HUGEPAGES --disk \
     $DISK,format=qcow2,bus=virtio --disk $CI_ISO,device=cdrom --network \
     bridge={{ bridge_name }},model=virtio $net_ext --os-type=linux --os-variant=rhel6 --noautoconsole \
-    --autostart {% if use_host_passthrough %}--cpu host-passthrough{% endif %}
+    --autostart {% if use_host_passthrough %}--cpu host-passthrough{% endif %} ${addparam} >> /tmp/spinup.log 2>&1
 
-    MAC=$(virsh domiflist $1 | grep {{ bridge_name }} | awk '{print $5}')
+    MAC=$(virsh domiflist ${nodename} | grep {{ bridge_name }} | awk '{print $5}')
     while true
     do
         # Skip this section when using a static IP.
-        if [ -n "$4" ]; then
-            echo $4 > /tmp/$1.ip.txt
+        if [ -n "${staticip}" ]; then
+            echo ${staticip} > /tmp/${nodename}.ip.txt
             break
         fi
 
@@ -159,14 +181,14 @@ fi
         else
             # Use nmap to find it if it's using the bridged network 
             # (instead of local nat)
-            mac=$(virsh domiflist $1 | grep -i "virtio" | awk '{print $5}')
+            mac=$(virsh domiflist ${nodename} | grep -i "virtio" | awk '{print $5}')
             IP=$(nmap -sP -n {{ bridge_network_cidr }} | grep -i "$mac" -B 2 | head -n1 | awk '{print $5}')
         fi
 
         if [ "$IP" = "" ]; then
             sleep 1
         else
-            echo $IP > /tmp/$1.ip.txt
+            echo $IP > /tmp/${nodename}.ip.txt
             break
         fi
     done
@@ -174,11 +196,11 @@ fi
 
     # Eject cdrom
     echo "$(date -R) Cleaning up cloud-init..."
-    virsh change-media $1 hda --eject --config >> $1.log
+    virsh change-media ${nodename} hda --eject --config >> ${nodename}.log
 
     # Remove the unnecessary cloud init files
     rm $USER_DATA $CI_ISO
 
-    echo "$(date -R) DONE. SSH to $1 using $IP, with  username 'centos'."
+    echo "$(date -R) DONE. SSH to ${nodename} using $IP, with  username 'centos'."
 
 popd > /dev/null
