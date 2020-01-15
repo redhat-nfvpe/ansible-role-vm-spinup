@@ -144,7 +144,7 @@
       virt_net:
         name: multus_2nics
         autostart: yes
-  when: network_type == "multus-2nics" or network_type == "none-2nics"
+  when: network_type == "2nics"
 
 - name: enable ipv6 forwarding
   sysctl:
