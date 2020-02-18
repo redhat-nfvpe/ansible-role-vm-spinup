@@ -4,29 +4,18 @@
 - name: Change network type ipv6
   set_fact:
     network_type: "ipv6"
-  when: ipv6_enabled == true
+  when: ipv6_enabled|bool
 
 - name: Perform spinup
   block:
     - import_tasks: virthost-basics.yml
-      when: "not skip_virthost_depedencies"
+      when: not skip_virthost_depedencies
 
     - import_tasks: spinup.yml
 
     - import_tasks: attach-disks.yml
-      when: "spare_disk_attach == true"
+      when: spare_disk_attach|bool
   when: not teardown
-
-# OCP4 configuration
-- block:
-    - name: Perform OCP4 configs
-      import_tasks: ocp4-setup.yml
-      when: not teardown
-
-    - name: Perform OCP4 cleanups
-      import_tasks: ocp4-cleanup.yml
-      when: teardown
-  when: ocp4_install | default('False') | bool
 
 - name: Perform teardown
   import_tasks: teardown.yml
