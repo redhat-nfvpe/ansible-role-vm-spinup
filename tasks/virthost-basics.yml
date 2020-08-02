@@ -15,8 +15,13 @@
       - virt-install
       - genisoimage
       - nmap
-      - "{{ 'python3-libvirt' if ansible_facts['distribution'] == 'Fedora' and (ansible_facts['distribution_major_version']|int) > 30 else 'libvirt-python' }}"
-      - python-lxml
+
+- name: pip install python modules
+  pip:
+    name: "{{ item }}"
+  with_items:
+    - lxml
+    - libvirt-python
 
 - name: Start and enable libvirtd
   service:
