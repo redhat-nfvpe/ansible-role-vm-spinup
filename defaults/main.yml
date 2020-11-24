@@ -53,7 +53,7 @@ ipv6_enabled: false
 # Virtualization Host options --------------------------
 
 images_directory: /home/images
-centos_genericcloud_url: "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-1907.qcow2"
+centos_genericcloud_url: "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2"
 image_archive_name: CentOS-7-x86_64-GenericCloud.qcow2.xz
 image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
 
