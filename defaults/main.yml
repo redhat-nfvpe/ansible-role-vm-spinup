@@ -53,9 +53,15 @@ ipv6_enabled: false
 # Virtualization Host options --------------------------
 
 images_directory: /home/images
+# for CentOS7 (will be deprecated)
 centos_genericcloud_url: "https://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2"
 image_archive_name: CentOS-7-x86_64-GenericCloud.qcow2.xz
 image_destination_name: CentOS-7-x86_64-GenericCloud.qcow2
+
+# for CentOS Stream
+#centos_genericcloud_url: "https://cloud.centos.org/centos/8-stream/x86_64/images/CentOS-Stream-GenericCloud-8-20201217.0.x86_64.qcow2"
+#image_archive_name: CentOS-Stream-x86_64-GenericCloud.qcow2.xz
+#image_destination_name: CentOS-Stream-x86_64-GenericCloud.qcow2
 
 # Allows one to skip the steps to initially setup a virthost
 # convenient when iterating quickly.
