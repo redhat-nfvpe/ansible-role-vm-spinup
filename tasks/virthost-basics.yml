@@ -15,8 +15,13 @@
       - virt-install
       - genisoimage
       - nmap
-      - "{{ 'python3-libvirt' if ansible_facts['distribution'] == 'Fedora' and (ansible_facts['distribution_major_version']|int) > 30 else 'libvirt-python' }}"
-      - python-lxml
+     - "{{ 'python3-libvirt' if ansible_facts['distribution'] == 'Fedora' and (ansible_facts['distribution_major_version']|int) > 30 else 'libvirt-python' }}"
+     - "{{ 'python3-lxml' if ansible_facts['distribution'] == 'Fedora' and (ansible_facts['distribution_major_version']|int) > 30 else 'python-lxml' }}"
+#
+# To work with CentOS 8 Stream host, this is necessary.
+#
+#     - "{{ 'python3-libvirt' if ansible_facts['distribution'] == 'CentOS' and (ansible_facts['distribution_major_version']|int) > 7 else 'libvirt-python' }}"
+#     - "{{ 'python3-lxml' if ansible_facts['distribution'] == 'CentOS' and (ansible_facts['distribution_major_version']|int) > 7 else 'python-lxml' }}"
 
 - name: Start and enable libvirtd
   service:
